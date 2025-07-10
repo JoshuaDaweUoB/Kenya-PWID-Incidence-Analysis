@@ -7,8 +7,8 @@ setwd("C:/Users/vl22683/OneDrive - University of Bristol/Documents/Publications/
 # load raw data
 load("indat_25June25.RData")  
 kenya_raw <- get(load("indat_25June25.RData"))
-View(kenya_raw)
-# Fixed version - handle NAs properly
+
+# rename variables and relevel
 kenya_clean <- kenya_raw %>%
   rename(
     incarc_life = F01,
@@ -44,6 +44,15 @@ kenya_clean <- kenya_raw %>%
         TRUE ~ 0
 )
   )
+
+# Replace NAs with "No" for incarc_life
+kenya_clean <- kenya_clean %>%
+  mutate(incarc_life = ifelse(is.na(incarc_life), "No", as.character(incarc_life)))
+
+# summary table
+summary(kenya_clean[c("incarc_life", "AGEBEST", "OSTACCESSED", "Hbinary",
+                       "sw_ever_partner", "sw_ever", "sw_ever_gender", "sw_30d", 
+                       "inj_freq_days_30d", "YRSINJ")])
 
 # convert character variables to factors
 kenya_clean <- kenya_clean %>%
